@@ -9,10 +9,12 @@
 // ---- Program Info End  ----
 
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 
 using namespace std;
 
+template<class type>
 class MySort{
     public:
         template<class T>
@@ -67,6 +69,33 @@ class MySort{
 
         template<class T>
         void
+        UpDownMergeSort( T & num, int size ){
+            aux = static_cast<type *>(malloc( size * sizeof(num[0]) ));
+            MergeSort( num, 0, size-1 );
+            free(aux);
+        }
+
+        template<class T>
+        void
+        DownUpMergeSort( T & num, int size ){
+            aux = static_cast<type *>(malloc( size * sizeof(num[0]) ));
+            for( int sz=1; sz < size; sz *= 2 ){
+                for( int lo=0; lo < size-sz; lo+=sz+sz )
+                    Merge( num, lo, lo+sz-1, lo+sz+sz-1 > size-1 ? size-1 : lo+sz+sz-1 );
+            }
+            free(aux);
+        }
+
+        template<class T>
+        void
+        Display( T & num ){
+            for( auto i:num )
+                cout<<i<<" ";
+            cout<<endl;
+        }
+    private:
+        template<class T>
+        void
         Swap(T & a, T & b){
             if( &a == &b )
                 return;
@@ -77,19 +106,41 @@ class MySort{
 
         template<class T>
         void
-        Display( T & num ){
-            for( auto i:num )
-                cout<<i<<" ";
-            cout<<endl;
+        Merge( T & num, int low, int mid, int high ){
+            int left = low, right = mid+1;
+            for( int i=low; i<=high; ++i )
+                aux[i] = num[i];
+            for( int i=low; i<=high; ++i )
+                if( left > mid )
+                    num[i] = aux[right++];
+                else if( right > high )
+                    num[i] = aux[left++];
+                else if( aux[left]<=aux[right] )
+                    num[i] = aux[left++];
+                else
+                    num[i] = aux[right++];
         }
+
+        template<class T>
+        void
+        MergeSort( T & num, int low, int high ){
+            if( low >= high )
+                return;
+            int mid = low + (high-low) / 2;
+            MergeSort( num, low, mid );
+            MergeSort( num, mid+1, high );
+            Merge( num, low, mid, high );
+        }
+
+        type * aux;
 };
 
 int main(int argc, char *argv[])
 {
     vector<int> seq = { 8, 2,4,1,5,7,3,6,9,0 };
-    MySort test;
+    MySort<int> test;
     test.Display( seq );
-    test.ShellSort( seq, seq.size() );
+    test.DownUpMergeSort( seq, seq.size() );
     test.Display( seq );
     return 0;
 }
