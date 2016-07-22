@@ -88,6 +88,18 @@ class MySort{
 
         template<class T>
         void
+        QuickSort( T & num, int size ){
+            PrivateQuickSort( num, 0, size-1 );
+        }
+
+        template<class T>
+        void
+        TriDirectQuickSort( T & num, int size ){
+            PrivateQuickSortTriDirectQuickSort( num, 0, size-1 );
+        }
+
+        template<class T>
+        void
         Display( T & num ){
             for( auto i:num )
                 cout<<i<<" ";
@@ -132,15 +144,61 @@ class MySort{
             Merge( num, low, mid, high );
         }
 
+        template<class T>
+        int
+        Partition( T & num, int low, int high ){
+            int left = low, right = high+1;
+            int v = num[low];
+            while(true){
+                while( num[++left] < v && left < high );
+                while( num[--right] > v && right > low );
+                if( left >= right )
+                    break;
+                Swap( num[left], num[right] );
+            }
+            Swap( num[low], num[right] );
+            return right;
+        }
+
+        template<class T>
+        void
+        PrivateQuickSort( T & num, int low, int high ){
+            if( low >= high )
+                return;
+            int mid = Partition( num, low, high );
+            PrivateQuickSort( num, low, mid-1 );
+            PrivateQuickSort( num, mid+1, high );
+        }
+
+        template<class T>
+        void
+        PrivateQuickSortTriDirectQuickSort( T & num, int low, int high ){
+            if( low >= high )
+                return;
+            int lt = low, i = low+1, gt = high;
+            int v = num[low];
+            while( i<=gt ){
+                if( num[i] < v )
+                    Swap( num[i++], num[lt++] );
+                else if( num[i] > v )
+                    Swap( num[i], num[gt--] );
+                else
+                    ++i;
+            }
+            PrivateQuickSortTriDirectQuickSort( num, low, lt-1 );
+            PrivateQuickSortTriDirectQuickSort( num, gt+1, high );
+        }
+
         type * aux;
 };
 
 int main(int argc, char *argv[])
 {
-    vector<int> seq = { 8, 2,4,1,5,7,3,6,9,0 };
+    //vector<int> seq = { 8, 2,4,1,5,7,3,6,9,0 };
+    vector<int> seq = { 1,2,3,4,3,2,1,5,2,1,3,1,4,2,2,5,3,2,1 };
     MySort<int> test;
     test.Display( seq );
-    test.DownUpMergeSort( seq, seq.size() );
+    test.QuickSort( seq, seq.size() );
     test.Display( seq );
     return 0;
 }
