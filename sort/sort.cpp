@@ -17,6 +17,8 @@ using namespace std;
 template<class type>
 class MySort{
     public:
+        //Bubble Sort
+        //Stable
         template<class T>
         void
         BubbleSort( T & num, int size ){
@@ -31,6 +33,8 @@ class MySort{
             }
         }
 
+        //Selection Sort
+        //Non-Stable
         template<class T>
         void
         SelectionSort( T & num, int size ){
@@ -44,6 +48,8 @@ class MySort{
             }
         }
 
+        //Insertion Sort
+        //Stable
         template<class T>
         void
         InsertionSort( T & num, int size ){
@@ -52,6 +58,8 @@ class MySort{
                     Swap( num[j], num[j-1] );
         }
 
+        //Shell Sort
+        //Non-Stable
         template<class T>
         void
         ShellSort( T & num, int size ){
@@ -67,6 +75,8 @@ class MySort{
             }
         }
 
+        //Merge Sort 1
+        //Stable
         template<class T>
         void
         UpDownMergeSort( T & num, int size ){
@@ -75,6 +85,8 @@ class MySort{
             free(aux);
         }
 
+        //Merge Sort 2
+        //Stable
         template<class T>
         void
         DownUpMergeSort( T & num, int size ){
@@ -86,18 +98,35 @@ class MySort{
             free(aux);
         }
 
+        //Quick Sort
+        //Non-Stable
         template<class T>
         void
         QuickSort( T & num, int size ){
             PrivateQuickSort( num, 0, size-1 );
         }
 
+        //3-Way Quick Sort
+        //Non-Stable
         template<class T>
         void
         TriDirectQuickSort( T & num, int size ){
             PrivateQuickSortTriDirectQuickSort( num, 0, size-1 );
         }
 
+        //Heap Sort
+        template<class T>
+        void
+        HeapSort( T & num, int size ){
+            for( int i=size/2; i>=1; i-- )
+                sink( num, i, size );
+            while( size > 1 ){
+                Swap( num[1], num[size--] );
+                sink( num, 1, size );
+            }
+        }
+
+        //Function to Display Array
         template<class T>
         void
         Display( T & num ){
@@ -105,7 +134,9 @@ class MySort{
                 cout<<i<<" ";
             cout<<endl;
         }
+
     private:
+        //Utilities Function
         template<class T>
         void
         Swap(T & a, T & b){
@@ -116,6 +147,7 @@ class MySort{
             a = a^b;
         }
 
+        //Function for Merge Sort
         template<class T>
         void
         Merge( T & num, int low, int mid, int high ){
@@ -133,6 +165,7 @@ class MySort{
                     num[i] = aux[right++];
         }
 
+        //Function for Merge Sort
         template<class T>
         void
         MergeSort( T & num, int low, int high ){
@@ -144,6 +177,7 @@ class MySort{
             Merge( num, low, mid, high );
         }
 
+        //Function for Quick Sort
         template<class T>
         int
         Partition( T & num, int low, int high ){
@@ -160,6 +194,7 @@ class MySort{
             return right;
         }
 
+        //Function for Quick Sort
         template<class T>
         void
         PrivateQuickSort( T & num, int low, int high ){
@@ -170,6 +205,7 @@ class MySort{
             PrivateQuickSort( num, mid+1, high );
         }
 
+        //Function for 3-Way Quick Sort
         template<class T>
         void
         PrivateQuickSortTriDirectQuickSort( T & num, int low, int high ){
@@ -189,16 +225,42 @@ class MySort{
             PrivateQuickSortTriDirectQuickSort( num, gt+1, high );
         }
 
+        //Function for Heap Sort
+        template<class T>
+        void
+        sink( T & num, int index, int size ){
+            while( 2*index <= size ){
+                int child = 2*index;
+                if( child<size && num[child]<num[child+1] )
+                    child += 1;
+                if( num[index] >= num[child] )
+                    break;
+                Swap( num[index], num[child] );
+                index = child;
+            }
+        }
+
+        //Function for Heap Sort
+        template<class T>
+        void
+        swim( T & num, int index ){
+            while( index>1 && num[index]>num[index/2] ) {
+                Swap( num[index], num[index/2] );
+                index /= 2;
+            }
+        }
+
+        //Auxiliary Array for Merge Sort
         type * aux;
 };
 
 int main(int argc, char *argv[])
 {
-    //vector<int> seq = { 8, 2,4,1,5,7,3,6,9,0 };
-    vector<int> seq = { 1,2,3,4,3,2,1,5,2,1,3,1,4,2,2,5,3,2,1 };
+    vector<int> seq = { -1,8, 2,4,1,5,7,3,6,9,0 };
+    //vector<int> seq = { 1,2,3,4,3,2,1,5,2,1,3,1,4,2,2,5,3,2,1 };
     MySort<int> test;
     test.Display( seq );
-    test.QuickSort( seq, seq.size() );
+    test.HeapSort( seq, seq.size()-1 );
     test.Display( seq );
     return 0;
 }
