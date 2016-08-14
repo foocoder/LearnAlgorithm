@@ -147,6 +147,20 @@ class MySort{
             num = B;
         }
 
+        template<class T>
+        void
+        TriColorSort( T & num, int size ){
+            int lt = 0, gt = size -1, i = 0;
+            while( i<=gt ){
+                if( num[i] < 1 )
+                    Swap( num[i++], num[lt++] );
+                else if( num[i] == 1 )
+                    i++;
+                else if( num[i] > 1 )
+                    Swap( num[i], num[gt--] );
+            }
+        }
+
         //Function to Display Array
         template<class T>
         void
@@ -278,11 +292,11 @@ class MySort{
 
 int main(int argc, char *argv[])
 {
-    vector<int> seq = { 2,1,3,6,5,4,8,7,9,10,11,12 };
+    vector<int> seq = { 1,2,0,2 };
     //vector<int> seq = { 1,2,3,4,3,2,1,5,2,1,3,1,4,2,2,5,3,2,1 };
     MySort<int> test;
     test.Display( seq );
-    test.ScaleSort( seq, seq.size(),3 );
+    test.TriColorSort( seq, seq.size());
     test.Display( seq );
     return 0;
 }
