@@ -121,9 +121,30 @@ class MySort{
             for( int i=size/2; i>=1; i-- )
                 sink( num, i, size );
             while( size > 1 ){
-                Swap( num[1], num[size--] );
-                sink( num, 1, size );
+                Swap( num[0], num[size-1] );
+                sink( num, 1, --size );
             }
+        }
+
+        //ScaleSort
+        template<class T>
+        void
+        ScaleSort(T & num, int size, int k) {
+            // write code here
+            for(int i=k/2; i>=1; i--)
+                sink(num, i, k);
+            T B;
+            for(int i=0; i<size-k; ++i){
+                B.push_back(num[0]);
+                Swap(num[0],num[k+i]);
+                sink(num,1,k);
+            }
+            while( k >= 1){
+                B.push_back(num[0]);
+                Swap(num[0], num[k-1] );
+                sink(num,1,--k);
+            }
+            num = B;
         }
 
         //Function to Display Array
@@ -226,16 +247,17 @@ class MySort{
         }
 
         //Function for Heap Sort
+        //Little Heap
         template<class T>
         void
         sink( T & num, int index, int size ){
             while( 2*index <= size ){
                 int child = 2*index;
-                if( child<size && num[child]<num[child+1] )
+                if( child<size && num[child - 1]>num[child] )
                     child += 1;
-                if( num[index] >= num[child] )
+                if( num[index-1] <= num[child-1] )
                     break;
-                Swap( num[index], num[child] );
+                Swap( num[index-1], num[child-1] );
                 index = child;
             }
         }
@@ -244,8 +266,8 @@ class MySort{
         template<class T>
         void
         swim( T & num, int index ){
-            while( index>1 && num[index]>num[index/2] ) {
-                Swap( num[index], num[index/2] );
+            while( index>1 && num[index-1]>num[index/2-1] ) {
+                Swap( num[index-1], num[index/2-1] );
                 index /= 2;
             }
         }
@@ -256,11 +278,11 @@ class MySort{
 
 int main(int argc, char *argv[])
 {
-    vector<int> seq = { -1,8, 2,4,1,5,7,3,6,9,0 };
+    vector<int> seq = { 2,1,3,6,5,4,8,7,9,10,11,12 };
     //vector<int> seq = { 1,2,3,4,3,2,1,5,2,1,3,1,4,2,2,5,3,2,1 };
     MySort<int> test;
     test.Display( seq );
-    test.HeapSort( seq, seq.size()-1 );
+    test.ScaleSort( seq, seq.size(),3 );
     test.Display( seq );
     return 0;
 }
