@@ -65,22 +65,24 @@ int KMPSearch( const string & txt, const string & pat ){
     alphaBetMap alphabet = getAlphabet( txt, pat );
     vector<vector<int>> dfa = getDFA( alphabet, pat );
     int n = txt.size(), m = pat.size();
-    for( int i=0,j=0; i<n && j<m; ++i ){
+    for( int i=0,j=0; i<n; ++i ){
         j = dfa[j][alphabet[txt[i]]];
         if( j==m )
             return i-m+1;
     }
-    return -1;
+    return n;
 }
 
 int main(int argc, char *argv[])
 {
     string txt = "BBC ABCDAB ABCDABCDABDE";
-    string pat = "ABCDABD";
+    string pat = "ABCDABDF";
 
     cout<<txt<<endl;
+    int sp = KMPSearch( txt, pat );
+    for(int i=0; i<sp; ++i)
+        cout<<" ";
     cout<<pat<<endl;
-    cout<<KMPSearch( txt, pat )<<endl;
 
     return 0;
 }
